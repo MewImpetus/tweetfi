@@ -1,26 +1,25 @@
 # TweetFi
 
-## Project structure
-
--   `contracts` - source code of all the smart contracts of the project and their dependencies.
--   `wrappers` - wrapper classes (implementing `Contract` from ton-core) for the contracts, including any [de]serialization primitives and compilation functions.
--   `tests` - tests for the contracts.
--   `scripts` - scripts used by the project, mainly the deployment scripts.
+TweetFi is an innovative social media mining platform that aims to provide social media users with a share to earn channel by combining AI technology and blockchain token economics.
 
 ## How to use
-
+```shell
+npm install
+```
 ### Build
 
-`npx blueprint build` or `yarn blueprint build`
+```shell
+npm run build
+```
 
 ### Test
 
-`npx blueprint test` or `yarn blueprint test`
+```shell
+npm run test
+```
 
 ### Deploy or run another script
 
-`npx blueprint run` or `yarn blueprint run`
-
-### Add a new contract
-
-`npx blueprint create ContractName` or `yarn blueprint create ContractName`
+```shell
+npm run start
+```
