@@ -25,7 +25,12 @@ contract TransactionValidator {
     receive(msg: TransactionExistCheck){
         let ctx: Context = context();
         require(ctx.sender == self.parent && self.pass == true, "No permission");
-        self.reply(InternalTweetMint{txid: self.txid, origin: msg.origin, to: msg.to, amount: msg.amount}.toCell());
+        // self.reply(InternalTweetMint{txid: self.txid, origin: msg.origin, to: msg.to, amount: msg.amount}.toCell());
+        send(SendParameters{
+            to: self.parent,
+            body: InternalTweetMint{txid: self.txid, origin: msg.origin, to: msg.to, amount: msg.amount}.toCell(),
+            value: myBalance() - ton("0.01"),             
+        });
         self.pass = false;
     }
 
@@ -39,5 +44,9 @@ contract TransactionValidator {
 
     get fun get_txid(): Int {
         return self.txid;
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }

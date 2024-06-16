@@ -1,8 +1,7 @@
 import "@stdlib/deploy";
 import "./jetton/master";
-import "./jetton/wallet";
+import "./tweetfi_wallet";
 import "./transaction_validator";
-import "./token_vault";
 
 message TweetMint {
     index: Int;
@@ -13,13 +12,7 @@ message TweetMint {
     to_str: String;
 }
 
-message Tip {
-    query_id: Int as uint64;
-    amount: Int as coins;
-    destination: Address; 
-    response_destination: Address;
-    forward_payload: Slice as remaining;
-}
+
 
 message MerkleRoot {
     value: String;
@@ -30,50 +23,8 @@ message MerkleAdmin {
 }
 
 
-
-contract TweetFiWallet with JettonWallet {
-    balance: Int as coins = 0;
-    owner: Address;
-    jetton_master: Address;
-    init(owner: Address, jetton_master: Address){
-        self.owner = owner;
-        self.jetton_master = jetton_master;
-    }
-
-    receive(msg: Tip) {
-        let ctx: Context = context();
-        self.balance = self.balance - msg.amount;
-        require(self.balance >= 0, "JettonWallet: Not enough jettons to tip");
-        let trans_msg: JettonTransfer = JettonTransfer {
-            query_id: msg.query_id,
-            amount: msg.amount,
-            destination: msg.destination,
-            response_destination: ctx.sender,
-            custom_payload: emptyCell(),
-            forward_ton_amount: 0,
-            forward_payload: msg.forward_payload
-        };
-        self._transfer_validate(ctx, trans_msg);
-        self._transfer_estimate_remain_value(ctx, trans_msg);
-        self._transfer_jetton(ctx, trans_msg);
-        let burn_msg: JettonBurn = JettonBurn {
-            query_id:  msg.query_id,
-            amount: msg.amount,
-            response_destination: ctx.sender,
-            custom_payload: emptyCell() 
-        };
-        self._burn_tokens(ctx, burn_msg);
-    }
-
-    override inline fun calculate_jetton_wallet_init(owner_address: Address): StateInit {
-        return initOf TweetFiWallet(owner_address, self.jetton_master);
-    }
-}
-
 contract TweetFi with JettonMaster, Deployable {
-    // Empty init() function is present by default in all Tact contracts
-    // since v1.3.0, so the following may be omitted:
-    //
+
     total_supply: Int as coins = 0;
     max_supply: Int as coins;
     mintable: Bool = true;
@@ -97,7 +48,7 @@ contract TweetFi with JettonMaster, Deployable {
         let init: StateInit = self.calculate_transaction_validator_init(msg.index);
         send(SendParameters{
                 to: contractAddress(init),
-                value: ton("0.01"),
+                value: 0,
                 mode: SendRemainingValue,
                 body: TransactionExistCheck{origin:ctx.sender, to: msg.to, amount: msg.amount}.toCell(),
                 code: init.code,
@@ -109,51 +60,29 @@ contract TweetFi with JettonMaster, Deployable {
     receive(msg: InternalTweetMint) {
         let ctx: Context = context();
         require(ctx.sender == contractAddress(self.calculate_transaction_validator_init(msg.txid)), "Only for transaction validator");
-        
-        let cash: Int = msg.amount/10*2;
 
-        // TODO record 80% to token vault  lock
-        let initCode: StateInit = self.calculate_vault_init(msg.to);
-        let vault_address: Address = contractAddress(initCode);
+        let initCode: StateInit = self.calculate_jetton_wallet_init(msg.to);
+        self.total_supply = (self.total_supply + msg.amount);
         send(SendParameters{
-            to: vault_address,
-            body: Lock { amount: msg.amount - cash }.toCell(),
-            value: ton("0.01"),             
-            mode: SendPayGasSeparately,
-            code: initCode.code,  
-            data: initCode.data
-        });
-
-        // send cash 20% to receiver
-        let _msg: JettonMint = JettonMint{
-            origin: msg.origin,
-            receiver: msg.to,
-            amount: cash,
-            custom_payload: emptyCell(),
-            forward_ton_amount: 0,
-            forward_payload: emptySlice()
-        };
-        let next_supply:Int = self.total_supply + msg.amount;
-        require(self.max_supply - next_supply > 0 && next_supply > 0, "Exceeded the limit of supply");
-        self._mint_validate(ctx, _msg);
-        self._mint(ctx, _msg);
+                to: contractAddress(initCode),
+                value: 0,
+                bounce: true,
+                mode: SendRemainingValue,
+                body: TweetFiTransfer{
+                    query_id: 0,
+                    amount: msg.amount,
+                    response_address: msg.origin,
+                    from: myAddress(),
+                    forward_ton_amount: 0,
+                    forward_payload: emptySlice()
+                }.toCell(),
+                code: initCode.code,
+                data: initCode.data
+            }
+        );
         
     }
 
-    receive(msg: WithdrawMint) {
-        let ctx: Context = context();
-        require(ctx.sender == contractAddress(self.calculate_vault_init(msg.to)), "Only for token vault");
-        let _msg: JettonMint = JettonMint{
-            origin: msg.to,
-            receiver: msg.to,
-            amount: msg.amount,
-            custom_payload: emptyCell(),
-            forward_ton_amount: 0,
-            forward_payload: emptySlice()
-        };
-        self._mint_validate(ctx, _msg);
-        self._mint(ctx, _msg);
-    }
 
     receive(msg: MerkleRoot) {
         require(sender() == self.admin, "Only for merkle admin");
@@ -212,10 +141,6 @@ contract TweetFi with JettonMaster, Deployable {
         return initOf TransactionValidator(txid, myAddress());
     }
 
-    inline fun calculate_vault_init(owner: Address): StateInit {
-        return initOf TokenVault(owner, myAddress());
-    }
-
     override fun _mint_validate(ctx: Context, msg: JettonMint) {
         require(self.mintable, "JettonMaster: Jetton is not mintable");
     }
@@ -242,8 +167,8 @@ contract TweetFi with JettonMaster, Deployable {
         return contractAddress(init);
     }
 
-    get fun get_vault_address(owner: Address): Address {
-        let initCode: StateInit = self.calculate_vault_init(owner);
-        return contractAddress(initCode);
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }
