@@ -3,7 +3,7 @@ import { toNano, Address, Cell, beginCell } from '@ton/core';
 import { TweetFi } from '../wrappers/TweetFi';
 import { TransactionValidator } from '../build/TweetFi/tact_TransactionValidator';
 import { TweetFiWallet } from '../build/TweetFi/tact_TweetFiWallet';
-import { buildOnchainMetadata } from "../utils/jetton-helpers";
+import { buildOnchainMetadata, createProofCells } from "../utils/jetton-helpers";
 import '@ton/test-utils';
 
 describe('TweetFi', () => {
@@ -103,13 +103,11 @@ describe('TweetFi', () => {
             success: false,
         });
 
-        let cell2: Cell = beginCell()
-            .storeUint(172282571249944562391355093940656328312n, 128)
-            .storeUint(0, 1).endCell();
-
-        let cell1: Cell = beginCell().storeRef(cell2)
-            .storeUint(203179498857370205237139927978231304761n, 128)
-            .storeUint(0, 1).endCell();
+        const proof = [
+            [203179498857370205237139927978231304761n, 0],
+            [172282571249944562391355093940656328312n, 0]
+        ];
+        let cell1 = createProofCells(proof)
 
         const tweetfi_mint_result = await tweetFi.send(
             deployer.getSender(),
@@ -127,14 +125,11 @@ describe('TweetFi', () => {
             }
         )
 
-
-        cell2 = beginCell()
-            .storeUint(172282571249944562391355093940656328312n, 128)
-            .storeUint(0, 1).endCell();
-
-        cell1 = beginCell().storeRef(cell2)
-            .storeUint(145204951486100674980495029225816940097n, 128)
-            .storeUint(1, 1).endCell();
+        const proof2 = [
+            [145204951486100674980495029225816940097n, 1],
+            [172282571249944562391355093940656328312n, 0]
+        ];
+        cell1 = createProofCells(proof2)
 
 
         const transaction_validator_address = await tweetFi.getGetTransactionValidatorAddress(123n);

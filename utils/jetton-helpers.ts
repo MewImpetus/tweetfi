@@ -1,6 +1,8 @@
 import { Sha256 } from "@aws-crypto/sha256-js";
 import { Dictionary, beginCell, Cell } from "@ton/core";
 
+
+
 const ONCHAIN_CONTENT_PREFIX = 0x00;
 const SNAKE_PREFIX = 0x00;
 const CELL_MAX_SIZE_BYTES = Math.floor((1023 - 8) / 8);
@@ -44,6 +46,27 @@ export function makeSnakeCell(data: Buffer) {
     }, beginCell());
     return b.endCell();
 }
+
+export function createProofCells(data: any) {
+
+    // 初始化最内层的 cell
+    let cell = beginCell()
+        .storeUint(data[data.length - 1][0], 128)
+        .storeUint(data[data.length - 1][1], 1)
+        .endCell();
+
+    // 从后向前构建嵌套 cell
+    for (let i = data.length - 2; i >= 0; i--) {
+        cell = beginCell()
+            .storeRef(cell)
+            .storeUint(data[i][0], 128)
+            .storeUint(data[i][1], 1)
+            .endCell();
+    }
+
+    return cell;
+}
+
 
 function bufferToChunks(buff: Buffer, chunkSize: number) {
     let chunks: Buffer[] = [];
