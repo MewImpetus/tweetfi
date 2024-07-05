@@ -40,7 +40,6 @@ class MerkleTree:
         transaction_hash = self.hash_data(transaction)
         if transaction_hash not in self.leaves:
             return False
-
         proof = self.get_proof(index)
         current_hash = transaction_hash
 
@@ -68,6 +67,7 @@ class MerkleTree:
 
 # 示例交易数据
 data_blocks = [
+    '0UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs99000000000000',
     '1UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs10000000000000',
     '2EQDY-uI3LXl12N1cBduBMN911HM3MdPMijWxLnZPOpbMX6Fi20000000000000',
     '3UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs30000000000000',
@@ -86,4 +86,4 @@ for target_index in range(0, 6):
     transaction = data_blocks[target_index]
 
     is_valid = merkle_tree.validate_transaction(transaction, target_index)
-    print(f'Index:{target_index}, Transaction is valid: {is_valid}, proof is: {merkle_tree.get_proof(target_index)}')
+    print(f'Index:{target_index}, Transaction: {transaction} is valid: {is_valid}, proof is: {merkle_tree.get_proof(target_index)}')
