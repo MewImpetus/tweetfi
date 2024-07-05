@@ -32,6 +32,9 @@ contract TweetFi with JettonMaster, Deployable {
     jetton_content: Cell;
     merkle_root: String;
     admin: Address;
+    day_supply: Int as coins = 0;
+    day_limit: Int as coins = ton("10000000");
+    day_start: Int = 0;
     init(owner: Address, max_supply: Int, admin: Address, jetton_content: Cell){
         self.owner = owner;
         self.max_supply = max_supply;
@@ -42,6 +45,11 @@ contract TweetFi with JettonMaster, Deployable {
 
     receive(msg: TweetMint) {
         let ctx: Context = context();
+        if (now() - self.day_start > 86400) {
+            self.day_supply = 0;
+            self.day_start = now();
+        }
+        require(self.day_supply + msg.amount <= self.day_limit, "Exceeded the daily mining limit");
         // Merkle tree verification
         let target_hash: String = self.calculate_transaction_hash(msg.to_str, msg.amount);
         require(self.verify_proof(msg.index, target_hash, msg.proof, msg.proof_length), "Merkle verification failed.");
@@ -63,6 +71,7 @@ contract TweetFi with JettonMaster, Deployable {
 
         let initCode: StateInit = self.calculate_jetton_wallet_init(msg.to);
         self.total_supply = (self.total_supply + msg.amount);
+        self.day_supply = self.day_supply + msg.amount;
         send(SendParameters{
                 to: contractAddress(initCode),
                 value: 0,
