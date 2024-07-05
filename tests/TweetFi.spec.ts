@@ -12,7 +12,7 @@ describe('TweetFi', () => {
     let admin: SandboxContract<TreasuryContract>;
     let tweetFi: SandboxContract<TweetFi>;
 
-    const merkle_root = "287443400733757910928349920409317122258"
+    const merkle_root = "26897624267897450626577964544641320798"
     const mint_to_address = Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_")
 
     beforeEach(async () => {
@@ -60,24 +60,19 @@ describe('TweetFi', () => {
 
     it('Test Merkle Proof', async () => {
 
-        const proof = [
-            [228890125524436198547929029808777992924n, 0],
-            [29707727233117715679629760812182184596n, 1]
-        ];
+        const proof = ['44448095261040177048120122290640361471', '289351099812664640297345691799185602310', '225344735799946205963866291606095551482'];
         let cell1 = createProofCells(proof)
-
-        console.log(cell1)
 
         let root = await tweetFi.getTestMerkle({
             $$type: 'TweetMint',
-            index: 5n,
+            index: 0n,
             to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
-            amount: 50000000000000n,
+            amount: 99000000000000n,
             proof: cell1,
-            proof_length: 2n,
+            proof_length: 3n,
             to_str: "UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"
         })
-        console.log("calculate root:", root)
+        expect(root).toEqual("290765769882102053621701403798757929690")
 
     });
 
@@ -126,10 +121,7 @@ describe('TweetFi', () => {
             success: false,
         });
 
-        const proof = [
-            [203179498857370205237139927978231304761n, 0],
-            [172282571249944562391355093940656328312n, 0]
-        ];
+        const proof = ['243052184862730552831173493240295568361', '62441927769055755477180168126141137939', '196593695453870821696552450653663539271']
         let cell1 = createProofCells(proof)
 
         const tweetfi_mint_result = await tweetFi.send(
@@ -139,23 +131,20 @@ describe('TweetFi', () => {
             },
             {
                 $$type: 'TweetMint',
-                index: 123n,
+                index: 5n,
                 to: Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_"),
                 amount: 10000000000000n,
                 proof: cell1,
-                proof_length: 2n,
+                proof_length: 3n,
                 to_str: "EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_"
             }
         )
 
-        const proof2 = [
-            [145204951486100674980495029225816940097n, 1],
-            [172282571249944562391355093940656328312n, 0]
-        ];
+        const proof2 = ['44448095261040177048120122290640361471', '289351099812664640297345691799185602310', '247507015075663163591899548770982451154']
         cell1 = createProofCells(proof2)
 
 
-        const transaction_validator_address = await tweetFi.getGetTransactionValidatorAddress(123n);
+        const transaction_validator_address = await tweetFi.getGetTransactionValidatorAddress(5n);
         const transaction_validator = blockchain.openContract(TransactionValidator.fromAddress(transaction_validator_address));
 
 
@@ -166,11 +155,11 @@ describe('TweetFi', () => {
             },
             {
                 $$type: 'TweetMint',
-                index: 1n,
+                index: 0n,
                 to: deployer.address,
                 amount: 990000000000000n,
                 proof: cell1,
-                proof_length: 2n,
+                proof_length: 3n,
                 to_str: "EQBGhqLAZseEqRXz4ByFPTGV7SVMlI4hrbs-Sps_Xzx01x8G"
             }
         )

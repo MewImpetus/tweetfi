@@ -43,8 +43,8 @@ contract TweetFi with JettonMaster, Deployable {
     receive(msg: TweetMint) {
         let ctx: Context = context();
         // Merkle tree verification
-        let target_hash: String = self.calculate_transaction_hash(msg.index, msg.to_str, msg.amount);
-        require(self.verify_proof(target_hash, msg.proof, msg.proof_length), "Merkle verification failed.");
+        let target_hash: String = self.calculate_transaction_hash(msg.to_str, msg.amount);
+        require(self.verify_proof(msg.index, target_hash, msg.proof, msg.proof_length), "Merkle verification failed.");
         let init: StateInit = self.calculate_transaction_validator_init(msg.index);
         send(SendParameters{
                 to: contractAddress(init),
@@ -109,15 +109,14 @@ contract TweetFi with JettonMaster, Deployable {
         return (sha256(s) >> 128).toString();
     }
 
-    inline fun calculate_transaction_hash(index: Int, to_str: String, amount: Int): String {
+    inline fun calculate_transaction_hash(to_str: String, amount: Int): String {
         let sb: StringBuilder = beginString();
-        sb.append(index.toString());
         sb.append(to_str);
         sb.append(amount.toString());
         return self.sha128(sb.toString());
     }
 
-    inline fun verify_proof(target_hash: String, proof: Cell, proof_length: Int): Bool {
+    inline fun verify_proof(index: Int, target_hash: String, proof: Cell, proof_length: Int): Bool {
         let current_hash: String = target_hash;
         let frist_cell: Bool = true; 
         let parser : Slice = proof.beginParse();
@@ -128,18 +127,18 @@ contract TweetFi with JettonMaster, Deployable {
                 }
             }
             let _hash: Int = parser.loadUint(128);
-            let _position: Int = parser.loadUint(1);
             let sb: StringBuilder = beginString();
 
-            if (_position == 1) {
-                sb.append(_hash.toString());
-                sb.append(current_hash);
-            } else {
-                sb.append(current_hash);
-                sb.append(_hash.toString());
-            }
 
+            if (index % 2 == 0) {
+                sb.append(current_hash);
+                sb.append(_hash.toString());
+            } else {
+                sb.append(_hash.toString());
+                sb.append(current_hash);
+            }
             current_hash = self.sha128(sb.toString());
+            index = index / 2;
             frist_cell = false;
         }
 
@@ -188,9 +187,11 @@ contract TweetFi with JettonMaster, Deployable {
 
     get fun testMerkle(msg: TweetMint): String {
         // Merkle tree verification
-        let current_hash: String = self.calculate_transaction_hash(msg.index, msg.to_str, msg.amount);
+        let current_hash: String = self.calculate_transaction_hash(msg.to_str, msg.amount);
         let frist_cell: Bool = true; 
         let parser : Slice = msg.proof.beginParse();
+        let index: Int = msg.index;
+        
         repeat (msg.proof_length) {
             if (!frist_cell) {
                 if !parser.refsEmpty() {
@@ -198,18 +199,18 @@ contract TweetFi with JettonMaster, Deployable {
                 }
             }
             let _hash: Int = parser.loadUint(128);
-            let _position: Int = parser.loadUint(1);
             let sb: StringBuilder = beginString();
 
-            if (_position == 1) {
-                sb.append(_hash.toString());
-                sb.append(current_hash);
-            } else {
-                sb.append(current_hash);
-                sb.append(_hash.toString());
-            }
 
+            if (index % 2 == 0) {
+                sb.append(current_hash);
+                sb.append(_hash.toString());
+            } else {
+                sb.append(_hash.toString());
+                sb.append(current_hash);
+            }
             current_hash = self.sha128(sb.toString());
+            index = index / 2;
             frist_cell = false;
         }
 
