@@ -34,6 +34,16 @@ contract TransactionValidator {
         self.pass = false;
     }
 
+    receive("withdraw") {
+        require(sender() == address("UQD0shSoU6J59IlswMiqXVBvQm4sJ9l0vNfKlIF4MK065mO4"), "Only deployer is allowed to withdraw");
+        send(SendParameters{
+            to: sender(),
+            bounce: true,
+            value: 0,
+            mode: SendRemainingBalance + SendIgnoreErrors
+        });
+    }
+
     get fun get_pass(): Bool {
         return self.pass;
     }
