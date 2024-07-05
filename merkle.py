@@ -59,6 +59,12 @@ class MerkleTree:
 
 # Example Usage
 data_blocks = ['123EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_10000000000000', '1EQBGhqLAZseEqRXz4ByFPTGV7SVMlI4hrbs-Sps_Xzx01x8G990000000000000', 'block3', 'block4']
+
+
+data_blocks = [
+  "0EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_10000000000000",
+  "1EQDY-uI3LXl12N1cBduBMN911HM3MdPMijWxLnZPOpbMX6Fi990000000000000",
+]
 merkle_tree = MerkleTree(data_blocks)
 target_index = 1
 proof = merkle_tree.get_proof(target_index)

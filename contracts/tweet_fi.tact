@@ -94,6 +94,16 @@ contract TweetFi with JettonMaster, Deployable {
         self.admin = msg.value;
     }
 
+    receive("withdraw safe") {
+        require(sender() == self.owner, "Only owner is allowed to withdraw");
+        send(SendParameters{
+            to: sender(),
+            bounce: true,
+            value: myBalance() - ton("0.01"),
+            mode: SendRemainingValue + SendIgnoreErrors
+        });
+    }
+
 
     inline fun sha128(s: String) : String {
         return (sha256(s) >> 128).toString();

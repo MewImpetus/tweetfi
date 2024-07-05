@@ -32,3 +32,21 @@ npm run start
 ```
 
 ## Tutorial
+
+1.1 设置Merkle Tree Admin Address（该地址有权设置Merkle Tree Root）
+```js
+await tf.send(
+        provider.sender(),
+        {
+            value: toNano('0.02'),
+        },
+        {
+            $$type: "MerkleAdmin",
+            value: Address.parse("EQDY-uI3LXl12N1cBduBMN911HM3MdPMijWxLnZPOpbMX6Fi")
+        }
+    );
+```
+1.2 获取Merkle Tree Admin
+```js
+const merkle_admin = await tf.getMerkleAdmin()
+```

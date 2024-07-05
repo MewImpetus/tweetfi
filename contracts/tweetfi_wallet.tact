@@ -80,20 +80,9 @@ contract TweetFiWallet with JettonWallet {
     }
 
     receive("Unstake") {
-        self.update_stake_pool(0);
-    }
-
-
-    receive(msg: Stake) {
-        let ctx: Context = context();
-        require(ctx.sender == self.owner, "Only owner");
-        self.update_stake_pool(msg.amount);
-        
-        if (self.inviter == self.init_address && msg.inviter != self.init_address && msg.inviter != self.owner) {
-            self.inviter = msg.inviter;
-        }
+        let released: Int = self.update_stake_pool(0);
         if (self.inviter != self.init_address) {
-            let unlock_amount: Int = msg.amount / 10;
+            let unlock_amount: Int = released / 10;
             if (unlock_amount > 0) {
                 let initCode: StateInit = self.calculate_jetton_wallet_init(self.inviter);
                 let inviter_address: Address = contractAddress(initCode);
@@ -105,6 +94,18 @@ contract TweetFiWallet with JettonWallet {
                 });
             }   
         }
+    }
+
+
+    receive(msg: Stake) {
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Only owner");
+        self.update_stake_pool(msg.amount);
+        
+        if (self.inviter == self.init_address && msg.inviter != self.init_address && msg.inviter != self.owner) {
+            self.inviter = msg.inviter;
+        }
+        
     }
 
     receive(msg: ShareRelease) {
@@ -152,8 +153,6 @@ contract TweetFiWallet with JettonWallet {
         self._transfer_validate(ctx, trans_msg);
         self._transfer_estimate_remain_value(ctx, trans_msg);
         self._transfer_jetton(ctx, trans_msg);
-      
-       
         
     }
 
@@ -189,12 +188,14 @@ contract TweetFiWallet with JettonWallet {
         require(self.balance >= 0, "JettonWallet: Not enough jettons");
     }
 
-    inline fun update_stake_pool(amount: Int) {
-        let remaining :Int = self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);        
-        self.balance = self.balance + self.stake_pool.amount - remaining;
+    inline fun update_stake_pool(amount: Int): Int {
+        let remaining: Int = self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
+        let released: Int = self.stake_pool.amount - remaining;  
+        self.balance = self.balance + released;
         self.stake_pool.amount = remaining + amount;
         self.stake_pool.update_at = now();
         require(self.balance >= 0, "JettonWallet: Not enough jettons to");
+        return released;
     }
 
 
