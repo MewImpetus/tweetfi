@@ -61,7 +61,8 @@ describe('TweetFi', () => {
     it('Test Merkle Proof', async () => {
 
         const proof = [
-            [260279343048444407331990186714751701729n, 0],
+            [228890125524436198547929029808777992924n, 0],
+            [29707727233117715679629760812182184596n, 1]
         ];
         let cell1 = createProofCells(proof)
 
@@ -69,11 +70,11 @@ describe('TweetFi', () => {
 
         let root = await tweetFi.getTestMerkle({
             $$type: 'TweetMint',
-            index: 1n,
+            index: 5n,
             to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
-            amount: 10000000000000n,
+            amount: 50000000000000n,
             proof: cell1,
-            proof_length: 1n,
+            proof_length: 2n,
             to_str: "UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"
         })
         console.log("calculate root:", root)
