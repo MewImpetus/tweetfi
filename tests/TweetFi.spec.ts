@@ -58,6 +58,28 @@ describe('TweetFi', () => {
         // blockchain and tweetFi are ready to use
     });
 
+    it('Test Merkle Proof', async () => {
+
+        const proof = [
+            [260279343048444407331990186714751701729n, 0],
+        ];
+        let cell1 = createProofCells(proof)
+
+        console.log(cell1)
+
+        let root = await tweetFi.getTestMerkle({
+            $$type: 'TweetMint',
+            index: 1n,
+            to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
+            amount: 10000000000000n,
+            proof: cell1,
+            proof_length: 1n,
+            to_str: "UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"
+        })
+        console.log("calculate root:", root)
+
+    });
+
     it('Test: Process', async () => {
         // the check is done inside beforeEach
         // blockchain and tweetFi are ready to use

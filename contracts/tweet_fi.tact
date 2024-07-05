@@ -181,4 +181,39 @@ contract TweetFi with JettonMaster, Deployable {
     get fun balance(): Int {
         return myBalance();
     }
+
+
+    // just for test TODO remove
+    //==================================================
+
+    get fun testMerkle(msg: TweetMint): String {
+        // Merkle tree verification
+        let current_hash: String = self.calculate_transaction_hash(msg.index, msg.to_str, msg.amount);
+        let frist_cell: Bool = true; 
+        let parser : Slice = msg.proof.beginParse();
+        repeat (msg.proof_length) {
+            if (!frist_cell) {
+                if !parser.refsEmpty() {
+                    parser = parser.loadRef().beginParse();
+                }
+            }
+            let _hash: Int = parser.loadUint(128);
+            let _position: Int = parser.loadUint(1);
+            let sb: StringBuilder = beginString();
+
+            if (_position == 1) {
+                sb.append(_hash.toString());
+                sb.append(current_hash);
+            } else {
+                sb.append(current_hash);
+                sb.append(_hash.toString());
+            }
+
+            current_hash = self.sha128(sb.toString());
+            frist_cell = false;
+        }
+
+        return current_hash;
+
+    }
 }
