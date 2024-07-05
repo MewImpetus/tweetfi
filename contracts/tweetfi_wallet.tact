@@ -82,6 +82,7 @@ contract TweetFiWallet with JettonWallet {
     receive("Unstake") {
         let released: Int = self.update_stake_pool(0);
         if (self.inviter != self.init_address) {
+            let ctx: Context = context();
             let unlock_amount: Int = released / 10;
             if (unlock_amount > 0) {
                 let initCode: StateInit = self.calculate_jetton_wallet_init(self.inviter);
