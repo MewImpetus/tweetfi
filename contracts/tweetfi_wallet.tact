@@ -211,5 +211,13 @@ contract TweetFiWallet with JettonWallet {
     get fun stake_info(): Pool {
         return self.stake_pool;
     }
+
+    get fun lock_released_now(): Int {
+        return self.lock_pool.amount - self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at);
+    }
+
+    get fun stake_released_now(): Int {
+        return self.stake_pool.amount - self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
+    }
     
 }
