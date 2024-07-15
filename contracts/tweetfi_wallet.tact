@@ -129,9 +129,9 @@ contract TweetFiWallet with JettonWallet {
         self.update_lock_pool(0);
         if ( msg.amount < self.lock_pool.amount) {
             self.lock_pool.amount = self.lock_pool.amount - msg.amount;
-            self.balance = self.balance +  msg.amount;
+            self.released = self.released +  msg.amount;
         } else {
-            self.balance = self.balance + self.lock_pool.amount;
+            self.released = self.released + self.lock_pool.amount;
             self.lock_pool.amount = 0;
         }    
     }
