@@ -33,8 +33,13 @@ message Tip {
     forward_payload: Slice as remaining;
 }
 
+message Claim {
+    amount: Int as coins;
+}
+
 contract TweetFiWallet with JettonWallet {
     balance: Int as coins = 0;
+    released: Int as coins = 0;
     owner: Address;
     jetton_master: Address;
 
@@ -95,6 +100,16 @@ contract TweetFiWallet with JettonWallet {
                 });
             }   
         }
+    }
+
+    receive(msg: Claim) {
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Only owner");
+        require(msg.amount <= self.released, "Exceeded the claimable quantity");
+        self.balance = self.balance + msg.amount;
+        self.released = self.released - msg.amount;
+        require(self.released >= 0, "JettonWallet: Not enough jettons");
+        require(self.balance >= 0, "JettonWallet: Not enough jettons");
     }
 
 
@@ -183,25 +198,29 @@ contract TweetFiWallet with JettonWallet {
 
     inline fun update_lock_pool(amount: Int) {
         let remaining :Int = self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at);    
-        self.balance = self.balance + self.lock_pool.amount - remaining;
+        self.released = self.released + self.lock_pool.amount - remaining;
         self.lock_pool.amount = remaining + amount;
         self.lock_pool.update_at = now();
-        require(self.balance >= 0, "JettonWallet: Not enough jettons");
+        require(self.released >= 0, "JettonWallet: Not enough jettons");
     }
 
     inline fun update_stake_pool(amount: Int): Int {
         let remaining: Int = self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
         let released: Int = self.stake_pool.amount - remaining;  
-        self.balance = self.balance + released;
+        self.released = self.released + released;
         self.stake_pool.amount = remaining + amount;
         self.stake_pool.update_at = now();
-        require(self.balance >= 0, "JettonWallet: Not enough jettons to");
+        require(self.released >= 0, "JettonWallet: Not enough jettons to");
         return released;
     }
 
 
     get fun balance(): Int {
         return myBalance();
+    }
+
+    get fun released_amount(): Int {
+        return self.released;
     }
 
     get fun lock_info(): Pool {
