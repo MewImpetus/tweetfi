@@ -10,7 +10,10 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 v0.0.1 [0QCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cA6k](https://testnet.tonviewer.com/kQCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cFNh)
 
 v0.0.2 修复部分问题，修改邀请奖励逻辑
- [kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW](https://testnet.tonviewer.com/kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW)
+[kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW](https://testnet.tonviewer.com/kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW)
+
+v0.0.3 增加获取当前可解锁及可释放的量的函数，修改释放逻辑，需要claim才会进入钱包
+[kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F](https://testnet.tonviewer.com/kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F)
 
 ## How to use
 ```shell
