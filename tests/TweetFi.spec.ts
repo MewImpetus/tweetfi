@@ -60,19 +60,20 @@ describe('TweetFi', () => {
 
     it('Test Merkle Proof', async () => {
 
-        const proof = ['44448095261040177048120122290640361471', '289351099812664640297345691799185602310', '225344735799946205963866291606095551482'];
+        const proof = ['137371635651936680969379878616821974210', '162898467532614113139102293973951447618', '242086117365407805641239866846385681918', '44923117045185218089151686612699295889'];
         let cell1 = createProofCells(proof)
 
         let root = await tweetFi.getTestMerkle({
             $$type: 'TweetMint',
             index: 0n,
             to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
-            amount: 99000000000000n,
+            amount: 10000000000000n,
             proof: cell1,
-            proof_length: 3n,
+            proof_length: 4n,
             to_str: "UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"
         })
-        expect(root).toEqual("290765769882102053621701403798757929690")
+        console.log("root:",  root)
+        expect(root).toEqual("193586101654378613795069811892660852148")
 
     });
 
