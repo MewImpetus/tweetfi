@@ -7,13 +7,30 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 ![](tweetfi.png)
 
 ## TestNet Jetton Master
-v0.0.1 [0QCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cA6k](https://testnet.tonviewer.com/kQCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cFNh)
+- v0.0.1 
 
-v0.0.2 修复部分问题，修改邀请奖励逻辑
-[kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW](https://testnet.tonviewer.com/kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW)
+    [0QCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cA6k](https://testnet.tonviewer.com/kQCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cFNh)
 
-v0.0.3 增加获取当前可解锁及可释放的量的函数，修改释放逻辑，需要claim才会进入钱包
-[kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F](https://testnet.tonviewer.com/kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F)
+- v0.0.2 修复部分问题，修改邀请奖励逻辑
+
+
+    [kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW](https://testnet.tonviewer.com/kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW)
+
+- v0.0.3 增加获取当前可解锁及可释放的量的函数，修改释放逻辑，需要claim才会进入钱包
+
+    [kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F](https://testnet.tonviewer.com/kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F)
+
+- v0.0.4 将挖矿直接解锁的部分计入released，用于claim提取，claim提取中整合unlock和unstake，新增claim amount数据接口，增加当前真lock和真stake数量的接口
+
+    [kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPo](https://testnet.tonviewer.com/kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPoF)
+
+    相关接口：
+    ```javascript
+    getClaimAmountNow // 获取当前可以claim的数量
+    getLockAmountMinusAutoUnlock // 当前真Lock的数量（减掉了自动解锁的部分）
+    getStakeAmountMinusAutoUnstake // 当前真Stake的数量 （减掉了自动解除质押的部分）
+    ```
+
 
 ## How to use
 ```shell
