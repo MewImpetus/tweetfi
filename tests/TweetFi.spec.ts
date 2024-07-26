@@ -252,7 +252,12 @@ describe('TweetFi', () => {
             }
         )
 
-        console.log("deployer balance:", (await admin_wallet.getGetWalletData()).balance);
+        console.log("deployer balance:", (await deployer_wallet.getGetWalletData()).balance);
+
+        console.log("deployer locked:", await deployer_wallet.getLockAmountMinusAutoUnlock());
+        console.log("deployer staked:", await deployer_wallet.getStakeAmountMinusAutoUnstake());
+        expect(await deployer_wallet.getLockAmountMinusAutoUnlock()).toEqual(792000000000000n);
+        expect(await deployer_wallet.getStakeAmountMinusAutoUnstake()).toEqual(0n);
 
         expect(deployer_claim_result.transactions).toHaveTransaction({
             from: deployer.address,
@@ -281,6 +286,8 @@ describe('TweetFi', () => {
             success: true,
         });
 
+        console.log("admin staked:", await admin_wallet.getStakeAmountMinusAutoUnstake());
+        expect(await admin_wallet.getStakeAmountMinusAutoUnstake()).toEqual(1000000000000n);
         expect((await admin_wallet.getStakeInfo()).amount).toEqual(1000000000000n)
         // expect((await deployer_wallet.getLockInfo()).amount).toEqual(791900000000000n)
 
