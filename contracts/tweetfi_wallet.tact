@@ -62,9 +62,9 @@ contract TweetFiWallet with JettonWallet {
         let ctx: Context = context();
         require(ctx.sender == self.jetton_master, "JettonMaster only");
         let cash: Int = msg.amount / 10 * 2;
-        self.balance = self.balance + cash;
+        self.released = self.released + cash;
         self.update_lock_pool(msg.amount - cash);
-        require(self.balance >= 0, "JettonWallet: Not allow negative balance after internal transfer");
+        require(self.released >= 0, "JettonWallet: Not allow negative released after internal transfer");
         let _msg: JettonInternalTransfer = JettonInternalTransfer {
             query_id: msg.query_id,
             amount: msg.amount,
@@ -80,14 +80,37 @@ contract TweetFiWallet with JettonWallet {
         self._internal_transfer_excesses(ctx, _msg, remain);
     }
 
-    receive("Unlock") {
-        self.update_lock_pool(0);
-    }
+    // receive("Unlock") {
+    //     self.update_lock_pool(0);
+    // }
 
-    receive("Unstake") {
+    // receive("Unstake") {
+    //     let released: Int = self.update_stake_pool(0);
+    //     if (self.inviter != self.init_address) {
+    //         let ctx: Context = context();
+    //         let unlock_amount: Int = released / 10;
+    //         if (unlock_amount > 0) {
+    //             let initCode: StateInit = self.calculate_jetton_wallet_init(self.inviter);
+    //             let inviter_address: Address = contractAddress(initCode);
+    //             send(SendParameters{
+    //                 to: inviter_address,
+    //                 body: ShareRelease { origin: ctx.sender, amount: unlock_amount }.toCell(),
+    //                 value: 0,             
+    //                 mode: SendRemainingValue,
+    //             });
+    //         }   
+    //     }
+    // }
+
+    receive(msg: Claim) {
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Only owner");
+        require(msg.amount <= self.released, "Exceeded the claimable quantity");
+        // unlock  released
+        self.update_lock_pool(0);
+        // unstake released
         let released: Int = self.update_stake_pool(0);
         if (self.inviter != self.init_address) {
-            let ctx: Context = context();
             let unlock_amount: Int = released / 10;
             if (unlock_amount > 0) {
                 let initCode: StateInit = self.calculate_jetton_wallet_init(self.inviter);
@@ -96,20 +119,15 @@ contract TweetFiWallet with JettonWallet {
                     to: inviter_address,
                     body: ShareRelease { origin: ctx.sender, amount: unlock_amount }.toCell(),
                     value: 0,             
-                    mode: SendRemainingValue,
+                    mode: SendIgnoreErrors,
                 });
             }   
         }
-    }
-
-    receive(msg: Claim) {
-        let ctx: Context = context();
-        require(ctx.sender == self.owner, "Only owner");
-        require(msg.amount <= self.released, "Exceeded the claimable quantity");
         self.balance = self.balance + msg.amount;
         self.released = self.released - msg.amount;
         require(self.released >= 0, "JettonWallet: Not enough jettons");
         require(self.balance >= 0, "JettonWallet: Not enough jettons");
+        self.reply("Claim Success".asComment());
     }
 
 
@@ -231,12 +249,24 @@ contract TweetFiWallet with JettonWallet {
         return self.stake_pool;
     }
 
+    get fun lock_amount_minus_auto_unlock(): Int {
+        return self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at);
+    }
+
+    get fun stake_amount_minus_auto_unstake(): Int {
+        return self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
+    }
+
     get fun lock_released_now(): Int {
         return self.lock_pool.amount - self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at);
     }
 
     get fun stake_released_now(): Int {
         return self.stake_pool.amount - self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
+    }
+
+    get fun claim_amount_now(): Int {
+        return self.released + self.lock_pool.amount - self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at) + self.stake_pool.amount - self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
     }
     
 }

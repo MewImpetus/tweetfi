@@ -203,14 +203,64 @@ describe('TweetFi', () => {
         console.log("twiffi Balance after InternalTweetMint:", Number(await tweetFi.getBalance()) / 10 ** 9);
 
         // wallet should be 2000000000000n lock should be 8000000000000n
-        expect((await admin_wallet.getGetWalletData()).balance).toEqual(2000000000000n)
+        expect(await admin_wallet.getReleasedAmount()).toEqual(2000000000000n)
         expect((await admin_wallet.getLockInfo()).amount).toEqual(8000000000000n)
 
         const deployer_wallet_address = await tweetFi.getGetWalletAddress(deployer.address);
         const deployer_wallet = blockchain.openContract(TweetFiWallet.fromAddress(deployer_wallet_address));
-        expect((await deployer_wallet.getGetWalletData()).balance).toEqual(198000000000000n)
+        expect(await deployer_wallet.getReleasedAmount()).toEqual(198000000000000n)
         expect((await deployer_wallet.getLockInfo()).amount).toEqual(792000000000000n)
        
+
+        // claim
+        const admin_claim_amount = await admin_wallet.getClaimAmountNow();
+        expect(admin_claim_amount).toEqual(2000000000000n)
+
+
+        const admin_claim_result = await admin_wallet.send(
+            admin.getSender(),
+            {
+                value: toNano('0.2'),
+            },
+            {
+                $$type: 'Claim',
+                amount: admin_claim_amount
+            }
+        )
+
+        console.log("admin balance:", (await admin_wallet.getGetWalletData()).balance);
+
+        expect(admin_claim_result.transactions).toHaveTransaction({
+            from: admin.address,
+            to: admin_wallet_address,
+            success: true,
+        });
+        expect(((await admin_wallet.getGetWalletData()).balance)).toEqual(admin_claim_amount)
+
+
+        const deployer_claim_amount = await deployer_wallet.getClaimAmountNow();
+        expect(deployer_claim_amount).toEqual(198000000000000n)
+
+        const deployer_claim_result = await deployer_wallet.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.2'),
+            },
+            {
+                $$type: 'Claim',
+                amount: deployer_claim_amount
+            }
+        )
+
+        console.log("deployer balance:", (await admin_wallet.getGetWalletData()).balance);
+
+        expect(deployer_claim_result.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: deployer_wallet_address,
+            success: true,
+        });
+        expect(((await deployer_wallet.getGetWalletData()).balance)).toEqual(deployer_claim_amount)
+
 
 
         // 2. test stake
