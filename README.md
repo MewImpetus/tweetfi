@@ -24,6 +24,9 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 
     [kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPo](https://testnet.tonviewer.com/kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPoF)
 
+- v0.0.5 解锁时间间隔设置为10分钟
+    [kQAMs_VEaeYk8_obGEuvARC2e2Cpq4rLtEB4zTfHnCfyqGdQ](https://testnet.tonviewer.com/kQAMs_VEaeYk8_obGEuvARC2e2Cpq4rLtEB4zTfHnCfyqGdQ)
+
     相关接口：
     ```javascript
     getClaimAmountNow // 获取当前可以claim的数量
