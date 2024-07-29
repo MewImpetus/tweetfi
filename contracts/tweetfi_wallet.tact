@@ -47,7 +47,7 @@ contract TweetFiWallet with JettonWallet {
     stake_pool: Pool;
     inviter: Address;
     init_address: Address;
-    const day_second: Int = 86400;
+    const day_second: Int = 600; // 为了快速测试，正式环境是 86400
 
     init(owner: Address, jetton_master: Address){
         self.owner = owner;

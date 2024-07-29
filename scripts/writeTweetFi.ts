@@ -62,5 +62,7 @@ export async function run(provider: NetworkProvider, args: string[]) {
 
     console.log("staking info:", await user_wallet.getStakeInfo())
 
+    
+
     ui.write('successfully!');
 }

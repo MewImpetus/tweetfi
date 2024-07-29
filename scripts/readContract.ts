@@ -25,5 +25,7 @@ export async function run(provider: NetworkProvider, args: string[]) {
 
     console.log("staking info:", await user_wallet.getStakeInfo())
 
+    console.log("stake minus claim", await user_wallet.getStakeAmountMinusAutoUnstake())
+
     ui.write('successfully!');
 }
