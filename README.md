@@ -35,6 +35,9 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 - v0.0.5 解锁时间间隔设置为10分钟
     [kQAMs_VEaeYk8_obGEuvARC2e2Cpq4rLtEB4zTfHnCfyqGdQ](https://testnet.tonviewer.com/kQAMs_VEaeYk8_obGEuvARC2e2Cpq4rLtEB4zTfHnCfyqGdQ)
 
+- v0.0.6 修复提取量会大于记录释放量的bug (解锁时间还是10分钟)
+    [kQDlG1G1wlfYAbqXfMB1MzzQKeKI_YTTPKBiTw_eFju95vo1](https://testnet.tonviewer.com/kQDlG1G1wlfYAbqXfMB1MzzQKeKI_YTTPKBiTw_eFju95vo1)
+
 ## How to use
 ```shell
 npm install
