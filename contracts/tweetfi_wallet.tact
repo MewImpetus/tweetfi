@@ -269,5 +269,9 @@ contract TweetFiWallet with JettonWallet {
     get fun claim_amount_now(): Int {
         return self.released + self.lock_pool.amount - self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at) + self.stake_pool.amount - self.calculate_released_amount(self.stake_pool.amount, self.stake_pool.update_at);
     }
+
+    get fun get_inviter(): Address {
+        return self.inviter;
+    }
     
 }

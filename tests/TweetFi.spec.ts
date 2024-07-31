@@ -314,6 +314,10 @@ describe('TweetFi', () => {
             success: true,
         });
 
+        // get inviter
+        const inviter = await deployer_wallet.getGetInviter();
+        console.log("inviter:", inviter)
+
     
   
 
