@@ -105,11 +105,12 @@ contract TweetFiWallet with JettonWallet {
     receive(msg: Claim) {
         let ctx: Context = context();
         require(ctx.sender == self.owner, "Only owner");
-        require(msg.amount <= self.released, "Exceeded the claimable quantity");
         // unlock  released
         self.update_lock_pool(0);
         // unstake released
         let released: Int = self.update_stake_pool(0);
+        require(msg.amount <= self.released, "Exceeded the claimable quantity");
+        
         if (self.inviter != self.init_address) {
             let unlock_amount: Int = released / 10;
             if (unlock_amount > 0) {
