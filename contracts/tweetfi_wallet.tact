@@ -119,7 +119,7 @@ contract TweetFiWallet with JettonWallet {
                 send(SendParameters{
                     to: inviter_address,
                     body: ShareRelease { origin: ctx.sender, amount: unlock_amount }.toCell(),
-                    value: 0,             
+                    value: ton("0.01"),             
                     mode: SendIgnoreErrors,
                 });
             }   
@@ -130,6 +130,26 @@ contract TweetFiWallet with JettonWallet {
         require(self.balance >= 0, "JettonWallet: Not enough jettons");
         self.reply("Claim Success".asComment());
     }
+
+    // receive("test claim") {
+    //     let ctx: Context = context();
+    //     require(ctx.sender == self.owner, "Only owner");
+    //     // unlock  released
+    //     self.update_lock_pool(0);
+    //     // unstake released
+    //     let released: Int = self.update_stake_pool(0);
+
+    //     let initCode: StateInit = self.calculate_jetton_wallet_init(self.inviter);
+    //             let inviter_address: Address = contractAddress(initCode);
+    //             send(SendParameters{
+    //                 to: inviter_address,
+    //                 body: ShareRelease { origin: ctx.sender, amount: ton("0.1") }.toCell(),
+    //                 value: ton("0.01"),             
+    //                 mode: SendIgnoreErrors,
+    //             });
+
+    //     self.reply("test Claim Success".asComment());
+    // }
 
 
     receive(msg: Stake) {

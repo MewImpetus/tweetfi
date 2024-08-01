@@ -315,11 +315,39 @@ describe('TweetFi', () => {
         });
 
         // get inviter
-        const inviter = await deployer_wallet.getGetInviter();
+        const inviter = await admin_wallet.getGetInviter();
+        expect(inviter.toString()).toEqual(deployer.address.toString())
         console.log("inviter:", inviter)
+        console.log(deployer.address)
 
-    
-  
+        
+        // test claim just for test
+        // const test_claim_res = await admin_wallet.send(
+        //     admin.getSender(),
+        //     {
+        //         value: toNano("0.05")
+        //     },
+        //     "test claim"
+        // )
+
+        // expect(test_claim_res.transactions).toHaveTransaction({
+        //     from: admin.address,
+        //     to: admin_wallet.address,
+        //     success: true,
+        // });
+
+        // expect(test_claim_res.transactions).toHaveTransaction({
+        //     from: admin_wallet.address,
+        //     to: deployer_wallet.address,
+        //     success: true,
+        // });
+
+        // expect(test_claim_res.transactions).toHaveTransaction({
+        //     from: admin_wallet.address,
+        //     to: admin.address,
+        //     success: true,
+        // });
+
 
     });
 });
