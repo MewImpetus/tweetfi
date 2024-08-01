@@ -38,6 +38,9 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 - v0.0.6 修复提取量会大于记录释放量的bug (解锁时间还是10分钟)
     [kQAzveTBvRkmrNvZq_5dOKfnjDKJAqRNT97RUmBmobHofNMi](https://testnet.tonviewer.com/kQAzveTBvRkmrNvZq_5dOKfnjDKJAqRNT97RUmBmobHofNMi)
 
+- v0.0.7 修复分享释放消息无法正确发送的问题,修复分享释放统计未完全问题 (解锁时间还是10分钟)
+    [kQB48T0nLAn0DzqNV-ShyRHs6jsyBVklYH7ZBk1G1mgsMWNx](https://testnet.tonviewer.com/0QB48T0nLAn0DzqNV-ShyRHs6jsyBVklYH7ZBk1G1mgsMT60)
+
 ## How to use
 ```shell
 npm install

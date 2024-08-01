@@ -321,7 +321,8 @@ describe('TweetFi', () => {
         console.log(deployer.address)
 
         
-        // test claim just for test
+        // ====== test claim just for test =====
+
         // const test_claim_res = await admin_wallet.send(
         //     admin.getSender(),
         //     {
