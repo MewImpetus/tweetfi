@@ -48,7 +48,7 @@ contract TweetFiWallet with JettonWallet {
     stake_pool: Pool;
     inviter: Address;
     init_address: Address;
-    const day_second: Int = 600; // 为了快速测试，正式环境是 86400
+    const day_second: Int = 86400; // 为了快速测试，正式环境是 86400
 
     init(owner: Address, jetton_master: Address){
         self.owner = owner;
@@ -81,27 +81,6 @@ contract TweetFiWallet with JettonWallet {
         self._internal_transfer_excesses(ctx, _msg, remain);
     }
 
-    // receive("Unlock") {
-    //     self.update_lock_pool(0);
-    // }
-
-    // receive("Unstake") {
-    //     let released: Int = self.update_stake_pool(0);
-    //     if (self.inviter != self.init_address) {
-    //         let ctx: Context = context();
-    //         let unlock_amount: Int = released / 10;
-    //         if (unlock_amount > 0) {
-    //             let initCode: StateInit = self.calculate_jetton_wallet_init(self.inviter);
-    //             let inviter_address: Address = contractAddress(initCode);
-    //             send(SendParameters{
-    //                 to: inviter_address,
-    //                 body: ShareRelease { origin: ctx.sender, amount: unlock_amount }.toCell(),
-    //                 value: 0,             
-    //                 mode: SendRemainingValue,
-    //             });
-    //         }   
-    //     }
-    // }
 
     receive(msg: Claim) {
         let ctx: Context = context();

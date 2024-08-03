@@ -70,7 +70,8 @@ contract TweetFi with JettonMaster, Deployable {
         require(ctx.sender == contractAddress(self.calculate_transaction_validator_init(msg.txid)), "Only for transaction validator");
 
         let initCode: StateInit = self.calculate_jetton_wallet_init(msg.to);
-        self.total_supply = (self.total_supply + msg.amount);
+        self.total_supply = self.total_supply + msg.amount;
+        require(self.total_supply <= self.max_supply, "JettonMaster: Cannot exceed the maximum issuance");
         self.day_supply = self.day_supply + msg.amount;
         send(SendParameters{
                 to: contractAddress(initCode),
@@ -160,6 +161,8 @@ contract TweetFi with JettonMaster, Deployable {
     }
 
     override fun _mint_validate(ctx: Context, msg: JettonMint) {
+        require(msg.amount == 0, "JettonMaster: Cannot Mint form here");
+        require(ctx.sender == self.owner, "JettonMaster: Sender is not a Jetton owner");
         require(self.mintable, "JettonMaster: Jetton is not mintable");
     }
 
