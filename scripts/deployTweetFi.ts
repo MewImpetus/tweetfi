@@ -17,7 +17,7 @@ export async function run(provider: NetworkProvider) {
     const jetton_content = buildOnchainMetadata(jettonParams);
     const max_supply = toNano("1000000000");
 
-    const owner = Address.parse("UQD75GcfTU8JOAGgDQeTiGJ69qct3VAW4_FpclC1Y37FSiAn")
+    const owner = Address.parse("UQD0shSoU6J59IlswMiqXVBvQm4sJ9l0vNfKlIF4MK065mO4")
     const admin = Address.parse("EQDY-uI3LXl12N1cBduBMN911HM3MdPMijWxLnZPOpbMX6Fi")
 
     const tweetFi = provider.open(await TweetFi.fromInit(owner, max_supply, admin, jetton_content));

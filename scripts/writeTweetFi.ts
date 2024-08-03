@@ -11,7 +11,7 @@ const Sleep = (ms: number) => {
 export async function run(provider: NetworkProvider, args: string[]) {
     const ui = provider.ui();
 
-    const address = Address.parse("kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPo");
+    const address = Address.parse("EQD2YsNVX3AKVnsUmTGZcirABMGU0D4iX4hk8xxb-687wbBp");
 
 
     const tf = provider.open(TweetFi.fromAddress(address));
@@ -25,11 +25,11 @@ export async function run(provider: NetworkProvider, args: string[]) {
     //     },
     //     {
     //         $$type: "MerkleAdmin",
-    //         value: Address.parse("EQDY-uI3LXl12N1cBduBMN911HM3MdPMijWxLnZPOpbMX6Fi")
+    //         value: Address.parse("EQAW7hVbG8t3FRE_jbVNpyI50XZJBbB2Gmf7fEAkvo_qX2q0")
     //     }
     // );
 
-    // ui.write('Waiting for send...');
+    ui.write('Waiting for send...');
     // await Sleep(10);
     const merkle_admin = await tf.getMerkleAdmin()
     console.log(merkle_admin)
@@ -55,14 +55,14 @@ export async function run(provider: NetworkProvider, args: string[]) {
     // )
 
 
-    const user_wallet_address = await tf.getGetWalletAddress(Address.parse("0QCkfhhHphlGejkE9Pkq4B17D2MovSRi59NuFOgdARYxzLwL"))
-    const user_wallet = provider.open(TweetFiWallet.fromAddress(user_wallet_address));
+    // const user_wallet_address = await tf.getGetWalletAddress(Address.parse("0QCkfhhHphlGejkE9Pkq4B17D2MovSRi59NuFOgdARYxzLwL"))
+    // const user_wallet = provider.open(TweetFiWallet.fromAddress(user_wallet_address));
 
-    console.log("claim now:", await user_wallet.getClaimAmountNow())
+    // console.log("claim now:", await user_wallet.getClaimAmountNow())
 
-    console.log("staking info:", await user_wallet.getStakeInfo())
+    // console.log("staking info:", await user_wallet.getStakeInfo())
 
     
 
-    ui.write('successfully!');
+    // ui.write('successfully!');
 }
