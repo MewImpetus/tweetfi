@@ -7,19 +7,16 @@ message TweetMint {
     index: Int;
     to: Address;
     amount: Int;
-    proof: Cell;
-    proof_length: Int;
-    to_str: String;
+    signature: Slice;
 }
 
 
-
-message MerkleRoot {
-    value: String;
-}
-
-message MerkleAdmin {
+message Admin {
     value: Address;
+}
+
+message Pub {
+    value: Int;
 }
 
 
@@ -30,17 +27,17 @@ contract TweetFi with JettonMaster, Deployable {
     mintable: Bool = true;
     owner: Address;
     jetton_content: Cell;
-    merkle_root: String;
     admin: Address;
+    pub: Int;
     day_supply: Int as coins = 0;
     day_limit: Int as coins = ton("10000000");
     day_start: Int = 0;
-    init(owner: Address, max_supply: Int, admin: Address, jetton_content: Cell){
+    init(owner: Address, max_supply: Int, admin: Address, pub: Int, jetton_content: Cell){
         self.owner = owner;
         self.max_supply = max_supply;
         self.jetton_content = jetton_content;
-        self.merkle_root = "";
         self.admin = admin;
+        self.pub = pub;
     }
 
     receive(msg: TweetMint) {
@@ -50,9 +47,8 @@ contract TweetFi with JettonMaster, Deployable {
             self.day_start = now();
         }
         require(self.day_supply + msg.amount <= self.day_limit, "Exceeded the daily mining limit");
-        // Merkle tree verification
-        let target_hash: String = self.calculate_transaction_hash(msg.to_str, msg.amount);
-        require(self.verify_proof(msg.index, target_hash, msg.proof, msg.proof_length), "Merkle verification failed.");
+        // check signature 
+        require(self.verify_signature(msg), "Merkle verification failed.");
         let init: StateInit = self.calculate_transaction_validator_init(msg.index);
         send(SendParameters{
                 to: contractAddress(init),
@@ -94,14 +90,16 @@ contract TweetFi with JettonMaster, Deployable {
     }
 
 
-    receive(msg: MerkleRoot) {
-        require(sender() == self.admin, "Only for merkle admin");
-        self.merkle_root = msg.value;
-    }
 
-    receive(msg: MerkleAdmin) {
+
+    receive(msg: Admin) {
         require(sender() == self.owner, "Only for owner");
         self.admin = msg.value;
+    }
+
+    receive(msg: Pub) {
+        require((sender() == self.owner || sender() == self.admin), "Only for owner");
+        self.pub = msg.value;
     }
 
     receive("withdraw safe") {
@@ -109,51 +107,17 @@ contract TweetFi with JettonMaster, Deployable {
         send(SendParameters{
             to: sender(),
             bounce: true,
-            value: myBalance() - ton("0.01"),
+            value: myBalance() - context().value - ton("0.01"),
             mode: SendRemainingValue + SendIgnoreErrors
         });
     }
 
 
-    inline fun sha128(s: String) : String {
-        return (sha256(s) >> 128).toString();
+    inline fun verify_signature(msg: TweetMint): Bool {
+        let signatureData: Cell = beginCell().storeAddress(msg.to).storeCoins(msg.amount).endCell();
+        return checkSignature(signatureData.hash(), msg.signature, self.pub);
     }
 
-    inline fun calculate_transaction_hash(to_str: String, amount: Int): String {
-        let sb: StringBuilder = beginString();
-        sb.append(to_str);
-        sb.append(amount.toString());
-        return self.sha128(sb.toString());
-    }
-
-    inline fun verify_proof(index: Int, target_hash: String, proof: Cell, proof_length: Int): Bool {
-        let current_hash: String = target_hash;
-        let frist_cell: Bool = true; 
-        let parser : Slice = proof.beginParse();
-        repeat (proof_length) {
-            if (!frist_cell) {
-                if !parser.refsEmpty() {
-                    parser = parser.loadRef().beginParse();
-                }
-            }
-            let _hash: Int = parser.loadUint(128);
-            let sb: StringBuilder = beginString();
-
-
-            if (index % 2 == 0) {
-                sb.append(current_hash);
-                sb.append(_hash.toString());
-            } else {
-                sb.append(_hash.toString());
-                sb.append(current_hash);
-            }
-            current_hash = self.sha128(sb.toString());
-            index = index / 2;
-            frist_cell = false;
-        }
-
-        return current_hash == self.merkle_root;
-    }
 
 
     inline fun calculate_transaction_validator_init(txid: Int): StateInit {
@@ -175,12 +139,12 @@ contract TweetFi with JettonMaster, Deployable {
     }
 
     // get functions
-    get fun merkle_admin(): Address {
+    get fun get_admin(): Address {
         return self.admin;
     }
 
-    get fun merkle_tree_root(): String {
-        return self.merkle_root;
+    get fun get_pub(): Int {
+        return self.pub;
     }
 
     get fun get_transaction_validator_address(index: Int): Address {
@@ -194,39 +158,22 @@ contract TweetFi with JettonMaster, Deployable {
     }
 
 
+
     // just for test TODO remove
     //==================================================
 
-    get fun testMerkle(msg: TweetMint): String {
-        // Merkle tree verification
-        let current_hash: String = self.calculate_transaction_hash(msg.to_str, msg.amount);
-        let frist_cell: Bool = true; 
-        let parser : Slice = msg.proof.beginParse();
-        let index: Int = msg.index;
-        
-        repeat (msg.proof_length) {
-            if (!frist_cell) {
-                if !parser.refsEmpty() {
-                    parser = parser.loadRef().beginParse();
-                }
-            }
-            let _hash: Int = parser.loadUint(128);
-            let sb: StringBuilder = beginString();
+    // get fun testcheckSignature(msg: TweetMint): Bool {
+    //     // Merkle tree verification
+    //     return self.verify_signature(msg);
+    // }
 
 
-            if (index % 2 == 0) {
-                sb.append(current_hash);
-                sb.append(_hash.toString());
-            } else {
-                sb.append(_hash.toString());
-                sb.append(current_hash);
-            }
-            current_hash = self.sha128(sb.toString());
-            index = index / 2;
-            frist_cell = false;
-        }
-
-        return current_hash;
-
-    }
+    // get fun testpow(amount: Int, rep: Int): Int {
+    //     let n: Int = 0;
+    //     while (n < rep && amount > 0) {      
+    //         n = n + 1;
+    //         amount = amount/100*99;
+    //     }
+    //     return amount;
+    // }
 }

@@ -5,6 +5,7 @@ import { TransactionValidator } from '../build/TweetFi/tact_TransactionValidator
 import { TweetFiWallet } from '../build/TweetFi/tact_TweetFiWallet';
 import { buildOnchainMetadata, createProofCells } from "../utils/jetton-helpers";
 import '@ton/test-utils';
+import { mnemonicToWalletKey, mnemonicNew, sign } from 'ton-crypto';
 
 describe('TweetFi', () => {
     let blockchain: Blockchain;
@@ -12,8 +13,7 @@ describe('TweetFi', () => {
     let admin: SandboxContract<TreasuryContract>;
     let tweetFi: SandboxContract<TweetFi>;
 
-    const merkle_root = "26897624267897450626577964544641320798"
-    const mint_to_address = Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_")
+    let mnemonic: string[];
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -30,7 +30,17 @@ describe('TweetFi', () => {
         const jetton_content = buildOnchainMetadata(jettonParams);
         const max_supply = toNano("1000000000");
 
-        tweetFi = blockchain.openContract(await TweetFi.fromInit(deployer.address, max_supply, admin.address, jetton_content));
+
+        
+        const mint_to_address = Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_")
+
+        mnemonic = await mnemonicNew();
+
+        const keyPair = await mnemonicToWalletKey(mnemonic);
+
+        const publicKeyBigInt = BigInt(`0x${keyPair.publicKey.toString('hex')}`);
+
+        tweetFi = blockchain.openContract(await TweetFi.fromInit(deployer.address, max_supply, admin.address, publicKeyBigInt, jetton_content));
 
 
 
@@ -60,36 +70,70 @@ describe('TweetFi', () => {
 
     it('Test Merkle Proof', async () => {
 
-        const proof = ['137371635651936680969379878616821974210', '162898467532614113139102293973951447618', '242086117365407805641239866846385681918', '44923117045185218089151686612699295889'];
-        let cell1 = createProofCells(proof)
+        const keyPair = await mnemonicToWalletKey(mnemonic);
 
-        let root = await tweetFi.getTestMerkle({
-            $$type: 'TweetMint',
-            index: 0n,
-            to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
-            amount: 10000000000000n,
-            proof: cell1,
-            proof_length: 4n,
-            to_str: "UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"
-        })
-        console.log("root:",  root)
-        expect(root).toEqual("193586101654378613795069811892660852148")
+        console.log("pub:", keyPair.publicKey)
+        let publicKeyBigInt = BigInt(`0x${keyPair.publicKey.toString('hex')}`);
+        
+        console.log("publicKeyBigInt:", publicKeyBigInt)
+        
+
+        let signatureData: Cell = beginCell().storeAddress(Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs")).storeCoins(10000000000000n).endCell();
+        const signature = sign(signatureData.hash(), keyPair.secretKey);
+
+        let signatureCell = beginCell().storeBuffer(signature).endCell();
+
+        
+        // const mint_result = await tweetFi.getTestcheckSignature({
+        //     $$type: 'TweetMint',
+        //     index: 0n,
+        //     to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
+        //     amount: 10000000000000n,
+        //     signature: signatureCell
+        // })
+
+        // expect(mint_result).toEqual(true);
+
+        // const mint_result2 = await tweetFi.getTestcheckSignature({
+        //     $$type: 'TweetMint',
+        //     index: 1n,
+        //     to: Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs"),
+        //     amount: 100000000000000n,
+        //     signature: signatureCell
+        // })
+
+        // expect(mint_result2).toEqual(false);
+
+
+
+
+        // test power
+
+        // const amount = await tweetFi.getTestpow(toNano("10000000"), 100n);
+
+        // console.log("amount:", amount/BigInt(10**9))
+        
+
 
     });
 
     it('Test: Process', async () => {
+
+
+        const keyPair = await mnemonicToWalletKey(mnemonic);
+        
         // the check is done inside beforeEach
         // blockchain and tweetFi are ready to use
-
-        // test set merkle root
+        const publicKeyBigInt = BigInt(`0x${keyPair.publicKey.toString('hex')}`);
+        // test set pub
         const merkle_root_set_res = await tweetFi.send(
             admin.getSender(),
             {
                 value: toNano("0.01")
             },
             {
-                $$type: 'MerkleRoot',
-                value: merkle_root
+                $$type: 'Pub',
+                value: publicKeyBigInt
             }
         )
 
@@ -99,31 +143,32 @@ describe('TweetFi', () => {
             success: true,
         });
 
-        expect(await tweetFi.getMerkleTreeRoot()).toEqual(merkle_root);
+        // expect(await tweetFi.getMerkleTreeRoot()).toEqual(merkle_root);
 
         console.log("Balance:", Number(await tweetFi.getBalance()) / Number(10 ** 9))
 
         // 1. test mint
 
-        const merkle_root_set_res_of_deployer = await tweetFi.send(
-            deployer.getSender(),
-            {
-                value: toNano("0.01")
-            },
-            {
-                $$type: 'MerkleRoot',
-                value: merkle_root
-            }
-        )
+        // const merkle_root_set_res_of_deployer = await tweetFi.send(
+        //     deployer.getSender(),
+        //     {
+        //         value: toNano("0.01")
+        //     },
+        //     {
+        //         $$type: 'MerkleRoot',
+        //         value: merkle_root
+        //     }
+        // )
 
-        expect(merkle_root_set_res_of_deployer.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: tweetFi.address,
-            success: false,
-        });
+        // expect(merkle_root_set_res_of_deployer.transactions).toHaveTransaction({
+        //     from: deployer.address,
+        //     to: tweetFi.address,
+        //     success: false,
+        // });
 
-        const proof = ['243052184862730552831173493240295568361', '62441927769055755477180168126141137939', '196593695453870821696552450653663539271']
-        let cell1 = createProofCells(proof)
+        const signatureData: Cell = beginCell().storeAddress(Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_")).storeCoins(10000000000000n).endCell();
+        const signature = sign(signatureData.hash(), keyPair.secretKey);
+        const signatureCell = beginCell().storeBuffer(signature).endCell();
 
         const tweetfi_mint_result = await tweetFi.send(
             deployer.getSender(),
@@ -132,20 +177,19 @@ describe('TweetFi', () => {
             },
             {
                 $$type: 'TweetMint',
-                index: 5n,
+                index: 0n,
                 to: Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_"),
                 amount: 10000000000000n,
-                proof: cell1,
-                proof_length: 3n,
-                to_str: "EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_"
+                signature: signatureCell
             }
         )
 
-        const proof2 = ['44448095261040177048120122290640361471', '289351099812664640297345691799185602310', '247507015075663163591899548770982451154']
-        cell1 = createProofCells(proof2)
 
+        const signatureData2: Cell = beginCell().storeAddress(deployer.address).storeCoins(990000000000000n).endCell();
+        const signature2 = sign(signatureData2.hash(), keyPair.secretKey);
+        const signatureCell2 = beginCell().storeBuffer(signature2).endCell();
 
-        const transaction_validator_address = await tweetFi.getGetTransactionValidatorAddress(5n);
+        const transaction_validator_address = await tweetFi.getGetTransactionValidatorAddress(0n);
         const transaction_validator = blockchain.openContract(TransactionValidator.fromAddress(transaction_validator_address));
 
 
@@ -156,12 +200,10 @@ describe('TweetFi', () => {
             },
             {
                 $$type: 'TweetMint',
-                index: 0n,
+                index: 1n,
                 to: deployer.address,
                 amount: 990000000000000n,
-                proof: cell1,
-                proof_length: 3n,
-                to_str: "EQBGhqLAZseEqRXz4ByFPTGV7SVMlI4hrbs-Sps_Xzx01x8G"
+                signature: signatureCell2
             }
         )
 

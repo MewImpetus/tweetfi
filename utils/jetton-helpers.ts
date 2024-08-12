@@ -62,6 +62,7 @@ export function createProofCells(data: any) {
             .endCell();
     }
 
+
     return cell;
 }
 

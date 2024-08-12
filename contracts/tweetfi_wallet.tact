@@ -196,7 +196,7 @@ contract TweetFiWallet with JettonWallet {
         send(SendParameters{
             to: sender(),
             bounce: true,
-            value: myBalance() -  ton("0.01"),
+            value: myBalance() - context().value - ton("0.01"),
             mode: SendRemainingValue + SendIgnoreErrors
         });
     }
