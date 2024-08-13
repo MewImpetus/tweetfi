@@ -124,7 +124,7 @@ describe('TweetFi', () => {
         console.log("amount1:", amount/BigInt(10**9))
         console.log("amount2:", amount2/BigInt(10**9))
 
-        console.log("amount13:", Number(toNano("10"))*0.99**300/10**9)
+        console.log("amount3:", Number(toNano("10"))*0.99**300/10**9)
         
 
 

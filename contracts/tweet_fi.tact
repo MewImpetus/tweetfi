@@ -177,17 +177,25 @@ contract TweetFi with JettonMaster, Deployable {
     }
 
     get fun testpow(amount: Int, days: Int): Int {
-        let remaining_amount: Int = amount;
-        let multiplier: Int = 99;
-
-        while (days > 0 && remaining_amount > 0) {
-            if (days % 2 == 1) {
-                remaining_amount = remaining_amount * multiplier / 100;
+        if(days <=50) {
+            let n: Int = 0;
+            while (n < days && amount > 0) {      
+                n = n + 1;
+                amount = amount/100*99;
             }
-            multiplier = multiplier * multiplier / 100;
-            days = days / 2;
+            return amount;
+        } else {
+            let t: Int = days / 50;
+            let r: Int = days % 50;
+            repeat(t){
+                amount = amount * 605006067 / 1000000000;
+            }
+            let n: Int = 0;
+            while (n < r && amount > 0) {      
+                n = n + 1;
+                amount = amount/100*99;
+            }
+            return amount;
         }
-
-        return remaining_amount;
     }
 }
