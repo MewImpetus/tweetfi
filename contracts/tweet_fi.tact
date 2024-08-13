@@ -167,35 +167,35 @@ contract TweetFi with JettonMaster, Deployable {
     //     return self.verify_signature(msg);
     // }
 
-     get fun testpow2(amount: Int, rep: Int): Int {
-        let n: Int = 0;
-        while (n < rep && amount > 0) {      
-            n = n + 1;
-            amount = amount/100*99;
-        }
-        return amount;
-    }
+    //  get fun testpow2(amount: Int, rep: Int): Int {
+    //     let n: Int = 0;
+    //     while (n < rep && amount > 0) {      
+    //         n = n + 1;
+    //         amount = amount/100*99;
+    //     }
+    //     return amount;
+    // }
 
-    get fun testpow(amount: Int, days: Int): Int {
-        if(days <=50) {
-            let n: Int = 0;
-            while (n < days && amount > 0) {      
-                n = n + 1;
-                amount = amount/100*99;
-            }
-            return amount;
-        } else {
-            let t: Int = days / 50;
-            let r: Int = days % 50;
-            repeat(t){
-                amount = amount * 605006067 / 1000000000;
-            }
-            let n: Int = 0;
-            while (n < r && amount > 0) {      
-                n = n + 1;
-                amount = amount/100*99;
-            }
-            return amount;
-        }
-    }
+    // get fun testpow(amount: Int, days: Int): Int {
+    //     if(days <=50) {
+    //         let n: Int = 0;
+    //         while (n < days && amount > 0) {      
+    //             n = n + 1;
+    //             amount = amount/100*99;
+    //         }
+    //         return amount;
+    //     } else {
+    //         let t: Int = days / 50;
+    //         let r: Int = days % 50;
+    //         repeat(t){
+    //             amount = amount * 605006067 / 1000000000;
+    //         }
+    //         let n: Int = 0;
+    //         while (n < r && amount > 0) {      
+    //             n = n + 1;
+    //             amount = amount/100*99;
+    //         }
+    //         return amount;
+    //     }
+    // }
 }

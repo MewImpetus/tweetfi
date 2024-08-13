@@ -117,14 +117,14 @@ describe('TweetFi', () => {
 
         // test power
 
-        const amount = await tweetFi.getTestpow(toNano("10"), 300n);
+        // const amount = await tweetFi.getTestpow(toNano("10"), 300n);
 
-        const amount2 = await tweetFi.getTestpow2(toNano("10"), 300n);
+        // const amount2 = await tweetFi.getTestpow2(toNano("10"), 300n);
 
-        console.log("amount1:", amount/BigInt(10**9))
-        console.log("amount2:", amount2/BigInt(10**9))
+        // console.log("amount1:", amount/BigInt(10**9))
+        // console.log("amount2:", amount2/BigInt(10**9))
 
-        console.log("amount3:", Number(toNano("10"))*0.99**300/10**9)
+        // console.log("amount3:", Number(toNano("10"))*0.99**300/10**9)
         
 
 

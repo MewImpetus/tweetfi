@@ -18,12 +18,12 @@ export async function run(provider: NetworkProvider, args: string[]) {
 
 
    
-    const amount = await tf.getTestpow(toNano("100000"), 5000n)
-    console.log("amount:", amount)
+    // const amount = await tf.getTestpow(toNano("100000"), 5000n)
+    // console.log("amount:", amount)
 
 
-    const amount2 = await tf.getTestpow2(toNano("100000"), 1200n)
-    console.log("amount2:", amount2)
+    // const amount2 = await tf.getTestpow2(toNano("100000"), 1200n)
+    // console.log("amount2:", amount2)
 
 
     // const user_wallet_address = await tf.getGetWalletAddress(Address.parse("0QCkfhhHphlGejkE9Pkq4B17D2MovSRi59NuFOgdARYxzLwL"))

@@ -48,17 +48,17 @@ export async function run(provider: NetworkProvider, args: string[]) {
 
   let signatureCell = beginCell().storeBuffer(signature).endCell();
 
-  await tf.send(
-    provider.sender(),
-    { value: toNano('0.2') },
-    {
-      $$type: "TweetMint",
-      index: 0n,
-      to: Address.parse("UQD75GcfTU8JOAGgDQeTiGJ69qct3VAW4_FpclC1Y37FSiAn"),
-      amount: 10000000000000n,
-      signature: signatureCell
-    }
-  )
+  // await tf.send(
+  //   provider.sender(),
+  //   { value: toNano('0.2') },
+  //   {
+  //     $$type: "TweetMint",
+  //     index: 0n,
+  //     to: Address.parse("UQD75GcfTU8JOAGgDQeTiGJ69qct3VAW4_FpclC1Y37FSiAn"),
+  //     amount: 10000000000000n,
+  //     signature: signatureCell
+  //   }
+  // )
 
 
   // await tf.send(
@@ -69,6 +69,13 @@ export async function run(provider: NetworkProvider, args: string[]) {
   //     value: Address.parse("UQD75GcfTU8JOAGgDQeTiGJ69qct3VAW4_FpclC1Y37FSiAn")
   //   }
   // )
+
+  // await tf.send(
+  //   provider.sender(),
+  //   { value: toNano('0.02') },
+  //   "withdraw safe"
+  // )
+
 
   // const user_wallet_address = await tf.getGetWalletAddress(Address.parse("UQD75GcfTU8JOAGgDQeTiGJ69qct3VAW4_FpclC1Y37FSiAn"))
   // const user_wallet = provider.open(TweetFiWallet.fromAddress(user_wallet_address));

@@ -10,6 +10,8 @@ export async function run(provider: NetworkProvider) {
 
         const mnemonic = await mnemonicNew();
 
+        
+
         console.log("mnemonic:", mnemonic)
 
         const keyPair = await mnemonicToWalletKey(mnemonic);

@@ -44,13 +44,19 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 - v0.0.8 修复gas超标bug，将默克尔证明改为交易签名的方式
     [kQDlOAuiTdQLpDGKJu3JPZ9cwPwSccYTakoxjoTJVlonNeim](https://testnet.tonviewer.com/kQDlOAuiTdQLpDGKJu3JPZ9cwPwSccYTakoxjoTJVlonNeim)
 
+- v0.0.9 优化按日释放的gas消耗
+    [kQBIbGLBLWvM5cbzH9E1QGJ0PiPZRBgG6EHsp8MUou44y2Md](https://testnet.tonviewer.com/kQBIbGLBLWvM5cbzH9E1QGJ0PiPZRBgG6EHsp8MUou44y2Md)
+
 
 - main net
     [EQD2YsNVX3AKVnsUmTGZcirABMGU0D4iX4hk8xxb-687wbBp](https://tonviewer.com/EQD2YsNVX3AKVnsUmTGZcirABMGU0D4iX4hk8xxb-687wbBp)
 
 
 - main net 修复gas超标错误
-    [EQA3CSgesvtCjXud0xhNIkaPoN5ijvsAiW43352BRr9-ELLM](https://tonviewer.com/UQA3CSgesvtCjXud0xhNIkaPoN5ijvsAiW43352BRr9-EO8J)
+    [EQBhLbz0AxdilLMfi9Mw8qhFBcYYHiLCxDN07G6oHfFFHrXl](https://tonviewer.com/EQBhLbz0AxdilLMfi9Mw8qhFBcYYHiLCxDN07G6oHfFFHrXl)
+
+
+- main net 全面优化合约
 
 
 
