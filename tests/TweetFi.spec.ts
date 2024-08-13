@@ -81,6 +81,14 @@ describe('TweetFi', () => {
         let signatureData: Cell = beginCell().storeAddress(Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs")).storeCoins(10000000000000n).endCell();
         const signature = sign(signatureData.hash(), keyPair.secretKey);
 
+        const base64String = signature.toString('base64');
+        console.log("signature base64String:", base64String);
+
+        console.log("signature:", signature)
+
+        const bufferFromBase64 = Buffer.from(base64String, 'base64');
+        console.log("signature:", bufferFromBase64);
+
         let signatureCell = beginCell().storeBuffer(signature).endCell();
 
         
@@ -109,9 +117,14 @@ describe('TweetFi', () => {
 
         // test power
 
-        // const amount = await tweetFi.getTestpow(toNano("10000000"), 100n);
+        const amount = await tweetFi.getTestpow(toNano("10"), 300n);
 
-        // console.log("amount:", amount/BigInt(10**9))
+        const amount2 = await tweetFi.getTestpow2(toNano("10"), 300n);
+
+        console.log("amount1:", amount/BigInt(10**9))
+        console.log("amount2:", amount2/BigInt(10**9))
+
+        console.log("amount13:", Number(toNano("10"))*0.99**300/10**9)
         
 
 

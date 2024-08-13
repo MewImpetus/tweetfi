@@ -207,13 +207,26 @@ contract TweetFiWallet with JettonWallet {
     }
 
     inline fun calculate_released_amount(amount: Int, update_at: Int): Int {
-        let n: Int = 0;
-        while (n < (now() - update_at)/self.day_second && amount > 0) {      
-            n = n + 1;
-            amount = amount/100*99;
+        let days: Int = (now() - update_at) / self.day_second;
+
+        if (days == 0) {
+            return amount;
         }
-        return amount;
+
+        let remaining_amount: Int = amount;
+        let multiplier: Int = 99;
+
+        while (days > 0 && remaining_amount > 0) {
+            if (days % 2 == 1) {
+                remaining_amount = remaining_amount * multiplier / 100;
+            }
+            multiplier = multiplier * multiplier / 100;
+            days = days / 2;
+        }
+
+        return remaining_amount;
     }
+
 
     inline fun update_lock_pool(amount: Int) {
         let remaining :Int = self.calculate_released_amount(self.lock_pool.amount, self.lock_pool.update_at);    

@@ -167,13 +167,27 @@ contract TweetFi with JettonMaster, Deployable {
     //     return self.verify_signature(msg);
     // }
 
+     get fun testpow2(amount: Int, rep: Int): Int {
+        let n: Int = 0;
+        while (n < rep && amount > 0) {      
+            n = n + 1;
+            amount = amount/100*99;
+        }
+        return amount;
+    }
 
-    // get fun testpow(amount: Int, rep: Int): Int {
-    //     let n: Int = 0;
-    //     while (n < rep && amount > 0) {      
-    //         n = n + 1;
-    //         amount = amount/100*99;
-    //     }
-    //     return amount;
-    // }
+    get fun testpow(amount: Int, days: Int): Int {
+        let remaining_amount: Int = amount;
+        let multiplier: Int = 99;
+
+        while (days > 0 && remaining_amount > 0) {
+            if (days % 2 == 1) {
+                remaining_amount = remaining_amount * multiplier / 100;
+            }
+            multiplier = multiplier * multiplier / 100;
+            days = days / 2;
+        }
+
+        return remaining_amount;
+    }
 }
