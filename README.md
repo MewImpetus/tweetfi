@@ -6,58 +6,9 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 ## Contract structure
 ![](tweetfi.png)
 
-## TestNet Jetton Master
-- v0.0.1 
+## Jetton Master
 
-    [0QCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cA6k](https://testnet.tonviewer.com/kQCe6-RwMOHP1DR8ZWaOfCvtGhYW8nqij-t65iqQCSK9cFNh)
-
-- v0.0.2 修复部分问题，修改邀请奖励逻辑
-
-
-    [kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW](https://testnet.tonviewer.com/kQAImG1uskTfoiCpiPeBhp0-epIHE36z763cs5RDC9DNgZNW)
-
-- v0.0.3 增加获取当前可解锁及可释放的量的函数，修改释放逻辑，需要claim才会进入钱包
-
-    [kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F](https://testnet.tonviewer.com/kQAf_QpBpgGaj9qRNwxG6OFAbfFTwoQLplZv2F8yvSRXNv_F)
-
-- v0.0.4 将挖矿直接解锁的部分计入released，用于claim提取，claim提取中整合unlock和unstake，新增claim amount数据接口，增加当前真lock和真stake数量的接口
-
-    [kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPo](https://testnet.tonviewer.com/kQC0koqOyJIjG9IMmG3QjNbseucO9OoW9Zxg6sLzWuRn3WPoF)
-
-
-    相关接口：
-    ```javascript
-    getClaimAmountNow // 获取当前可以claim的数量
-    getLockAmountMinusAutoUnlock // 当前真Lock的数量（减掉了自动解锁的部分）
-    getStakeAmountMinusAutoUnstake // 当前真Stake的数量 （减掉了自动解除质押的部分）
-    ```
-
-- v0.0.5 解锁时间间隔设置为10分钟
-    [kQAMs_VEaeYk8_obGEuvARC2e2Cpq4rLtEB4zTfHnCfyqGdQ](https://testnet.tonviewer.com/kQAMs_VEaeYk8_obGEuvARC2e2Cpq4rLtEB4zTfHnCfyqGdQ)
-
-- v0.0.6 修复提取量会大于记录释放量的bug (解锁时间还是10分钟)
-    [kQAzveTBvRkmrNvZq_5dOKfnjDKJAqRNT97RUmBmobHofNMi](https://testnet.tonviewer.com/kQAzveTBvRkmrNvZq_5dOKfnjDKJAqRNT97RUmBmobHofNMi)
-
-- v0.0.7 修复分享释放消息无法正确发送的问题,修复分享释放统计未完全问题 (解锁时间还是10分钟)
-    [kQB48T0nLAn0DzqNV-ShyRHs6jsyBVklYH7ZBk1G1mgsMWNx](https://testnet.tonviewer.com/0QB48T0nLAn0DzqNV-ShyRHs6jsyBVklYH7ZBk1G1mgsMT60)
-
-- v0.0.8 修复gas超标bug，将默克尔证明改为交易签名的方式
-    [kQDlOAuiTdQLpDGKJu3JPZ9cwPwSccYTakoxjoTJVlonNeim](https://testnet.tonviewer.com/kQDlOAuiTdQLpDGKJu3JPZ9cwPwSccYTakoxjoTJVlonNeim)
-
-- v0.0.9 优化按日释放的gas消耗
-    [kQBIbGLBLWvM5cbzH9E1QGJ0PiPZRBgG6EHsp8MUou44y2Md](https://testnet.tonviewer.com/kQBIbGLBLWvM5cbzH9E1QGJ0PiPZRBgG6EHsp8MUou44y2Md)
-
-
-- main net
-    [EQD2YsNVX3AKVnsUmTGZcirABMGU0D4iX4hk8xxb-687wbBp](https://tonviewer.com/EQD2YsNVX3AKVnsUmTGZcirABMGU0D4iX4hk8xxb-687wbBp)
-
-
-- main net 修复gas超标错误
-    [EQA3CSgesvtCjXud0xhNIkaPoN5ijvsAiW43352BRr9-ELLM](https://tonviewer.com/UQA3CSgesvtCjXud0xhNIkaPoN5ijvsAiW43352BRr9-EO8J)
-
-
-- main net 全面优化合约
-    [EQBhLbz0AxdilLMfi9Mw8qhFBcYYHiLCxDN07G6oHfFFHrXl](https://tonviewer.com/EQBhLbz0AxdilLMfi9Mw8qhFBcYYHiLCxDN07G6oHfFFHrXl)
+[EQBhLbz0AxdilLMfi9Mw8qhFBcYYHiLCxDN07G6oHfFFHrXl](https://tonviewer.com/EQBhLbz0AxdilLMfi9Mw8qhFBcYYHiLCxDN07G6oHfFFHrXl)
 
 
 ## How to use
