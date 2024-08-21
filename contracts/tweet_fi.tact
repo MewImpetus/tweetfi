@@ -114,7 +114,7 @@ contract TweetFi with JettonMaster, Deployable {
 
 
     inline fun verify_signature(msg: TweetMint): Bool {
-        let signatureData: Cell = beginCell().storeAddress(msg.to).storeCoins(msg.amount).endCell();
+        let signatureData: Cell = beginCell().storeAddress(msg.to).storeCoins(msg.amount).storeInt(msg.index, 64).endCell();
         return checkSignature(signatureData.hash(), msg.signature, self.pub);
     }
 

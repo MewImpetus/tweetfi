@@ -78,7 +78,7 @@ describe('TweetFi', () => {
         console.log("publicKeyBigInt:", publicKeyBigInt)
         
 
-        let signatureData: Cell = beginCell().storeAddress(Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs")).storeCoins(10000000000000n).endCell();
+        let signatureData: Cell = beginCell().storeAddress(Address.parse("UQAEg6xitp3M_Pj9pjHQpLeGZ8PxIEH2RwGCTpMNE6sOjycs")).storeCoins(10000000000000n).storeInt(0n, 64).endCell();
         const signature = sign(signatureData.hash(), keyPair.secretKey);
 
         const base64String = signature.toString('base64');
@@ -179,7 +179,7 @@ describe('TweetFi', () => {
         //     success: false,
         // });
 
-        const signatureData: Cell = beginCell().storeAddress(Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_")).storeCoins(10000000000000n).endCell();
+        const signatureData: Cell = beginCell().storeAddress(Address.parse("EQAX21A4fIw7hX1jmRjvJT0DX7H_FUItj2duCBWtK4ayEiC_")).storeCoins(10000000000000n).storeInt(0n, 64).endCell();
         const signature = sign(signatureData.hash(), keyPair.secretKey);
         const signatureCell = beginCell().storeBuffer(signature).endCell();
 
@@ -198,7 +198,7 @@ describe('TweetFi', () => {
         )
 
 
-        const signatureData2: Cell = beginCell().storeAddress(deployer.address).storeCoins(990000000000000n).endCell();
+        const signatureData2: Cell = beginCell().storeAddress(deployer.address).storeCoins(990000000000000n).storeInt(1n, 64).endCell();
         const signature2 = sign(signatureData2.hash(), keyPair.secretKey);
         const signatureCell2 = beginCell().storeBuffer(signature2).endCell();
 
@@ -257,6 +257,8 @@ describe('TweetFi', () => {
 
         console.log("twiffi Balance after InternalTweetMint:", Number(await tweetFi.getBalance()) / 10 ** 9);
 
+       
+
         // wallet should be 2000000000000n lock should be 8000000000000n
         expect(await admin_wallet.getReleasedAmount()).toEqual(2000000000000n)
         expect((await admin_wallet.getLockInfo()).amount).toEqual(8000000000000n)
@@ -266,6 +268,15 @@ describe('TweetFi', () => {
         expect(await deployer_wallet.getReleasedAmount()).toEqual(198000000000000n)
         expect((await deployer_wallet.getLockInfo()).amount).toEqual(792000000000000n)
        
+
+         // 1.5 wallet to address : ton excess
+        // console.log("deployer_wallet_address:", deployer_wallet_address)
+        // console.log("deployer.address:", deployer.address)
+        // expect(deployer_mint_result.transactions).toHaveTransaction({
+        //     from: deployer_wallet_address,
+        //     to: deployer.address,
+        //     success: true,
+        // });
 
         // claim
         const admin_claim_amount = await admin_wallet.getClaimAmountNow();

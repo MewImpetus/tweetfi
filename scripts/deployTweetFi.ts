@@ -31,7 +31,7 @@ export async function run(provider: NetworkProvider) {
     const max_supply = toNano("1000000000");
 
     const owner = Address.parse("UQD0shSoU6J59IlswMiqXVBvQm4sJ9l0vNfKlIF4MK065mO4")
-    const admin = Address.parse("EQDY-uI3LXl12N1cBduBMN911HM3MdPMijWxLnZPOpbMX6Fi")
+    const admin = Address.parse("EQAW7hVbG8t3FRE_jbVNpyI50XZJBbB2Gmf7fEAkvo_qX2q0")
 
     const tweetFi = provider.open(await TweetFi.fromInit(owner, max_supply, admin, publicKeyBigInt, jetton_content));
 
