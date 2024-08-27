@@ -28,7 +28,7 @@ describe('TweetFi', () => {
             image: "https://raw.githubusercontent.com/MewImpetus/xfi/main/logo.png",
         };
         const jetton_content = buildOnchainMetadata(jettonParams);
-        const max_supply = toNano("1000000000");
+        const max_supply = toNano("10000000000");
 
 
         
