@@ -28,7 +28,7 @@ export async function run(provider: NetworkProvider) {
     };
 
     const jetton_content = buildOnchainMetadata(jettonParams);
-    const max_supply = toNano("1000000000");
+    const max_supply = toNano("10000000000");
 
     const owner = Address.parse("UQD0shSoU6J59IlswMiqXVBvQm4sJ9l0vNfKlIF4MK065mO4")
     const admin = Address.parse("EQAW7hVbG8t3FRE_jbVNpyI50XZJBbB2Gmf7fEAkvo_qX2q0")

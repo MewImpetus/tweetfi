@@ -11,6 +11,9 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 [EQB3zR7tgrNjVKa9JubBoFbe77GeUVzYfFsJIpprll9xbvbE](https://tonviewer.com/EQB3zR7tgrNjVKa9JubBoFbe77GeUVzYfFsJIpprll9xbvbE)
 
 
+## BSC Token
+[0xEEF8387650D5d565628ED0e6579C08e8ecfDE54a](https://bscscan.com/token/0xeef8387650d5d565628ed0e6579c08e8ecfde54a)
+
 ## How to use
 ```shell
 npm install
