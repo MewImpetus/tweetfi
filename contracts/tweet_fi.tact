@@ -30,7 +30,7 @@ contract TweetFi with JettonMaster, Deployable {
     admin: Address;
     pub: Int;
     day_supply: Int as coins = 0;
-    day_limit: Int as coins = ton("10000000");
+    day_limit: Int as coins = ton("100000000");
     day_start: Int = 0;
     init(owner: Address, max_supply: Int, admin: Address, pub: Int, jetton_content: Cell){
         self.owner = owner;

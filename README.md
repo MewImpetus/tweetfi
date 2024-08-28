@@ -8,7 +8,7 @@ TweetFi is an innovative social media mining platform that aims to provide socia
 
 ## Jetton Master
 
-[EQB3zR7tgrNjVKa9JubBoFbe77GeUVzYfFsJIpprll9xbvbE](https://tonviewer.com/EQB3zR7tgrNjVKa9JubBoFbe77GeUVzYfFsJIpprll9xbvbE)
+[EQC5TJkmjUaeMID0JYON3-u529x7yMhSVg6uWHO--_NXWY4x](https://tonviewer.com/EQC5TJkmjUaeMID0JYON3-u529x7yMhSVg6uWHO--_NXWY4x)
 
 
 ## BSC Token
